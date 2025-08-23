@@ -1,32 +1,14 @@
-from gpt4all import GPT4All
-from load_vector_store import load_vector_store
-from create_vector_store import create_vector_store
+from controllers.setup import setup
+from controllers.manage_input import manage_input
 
-print("Iniciando RAG ...")
-MODEL_NAME = "Meta-Llama-3-8B-Instruct.Q4_0.gguf" 
-model = GPT4All(model_name=MODEL_NAME, allow_download=True, device="gpu", verbose=False)
+MENSAGEM = "[1] - PERGUNTAR\n[0] - Sair\nEscolha: "
 
-print("Carregando banco de vetors...")
-vector_store = load_vector_store()
+model, vector_store = setup()
 
-entrada = input("Entrada : \n")
-contexto_docs = vector_store.similarity_search(entrada, k=3)
+escolha_usuario = input(MENSAGEM)
+while escolha_usuario != "0":
+    entrada = input("Entrada : \n")
+    saida = manage_input(model, vector_store, entrada)
+    print("Resposta : \n" + saida)
 
-print("Injetando contexto ...")
-contexto = ""
-for d in contexto_docs:
-    contexto += d.metadata.get("source")
-    contexto += "\n"
-    contexto += d.metadata.get("enunciado")
-    contexto += "\n"
-    contexto += d.page_content
-    contexto += "\n\n"
-
-print(contexto)
-
-print("Gerando Resposta ...")
-saida = ""
-with model.chat_session(system_prompt="Você é um assistende de uma área jurídica. Busque desenvolver as bases jurídicas necessárias. Se não houver certeza, diga que não sabe. Responda com base no CONTEXTO a seguir : \n" + contexto):
-    saida = model.generate(entrada, max_tokens=1024, temp=0.2)
-
-print("Resposta do modelo : \n" + saida)
+    escolha_usuario = input(MENSAGEM)
