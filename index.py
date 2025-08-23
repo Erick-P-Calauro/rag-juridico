@@ -9,12 +9,8 @@ model = GPT4All(model_name=MODEL_NAME, allow_download=True, device="gpu", verbos
 print("Carregando banco de vetors...")
 vector_store = load_vector_store()
 
-# Hyde (Documento Hipotético)
 entrada = input("Entrada : \n")
-
-print("Gerando Hyde ...")
-hyde = model.generate(entrada, max_tokens=256, temp=0.7)
-contexto_docs = vector_store.similarity_search(hyde, k=3)
+contexto_docs = vector_store.similarity_search(entrada, k=3)
 
 print("Injetando contexto ...")
 contexto = ""
@@ -28,8 +24,9 @@ for d in contexto_docs:
 
 print(contexto)
 
+print("Gerando Resposta ...")
 saida = ""
-with model.chat_session(system_prompt="Responda com base no CONTEXTO a seguir : \n" + contexto):
+with model.chat_session(system_prompt="Você é um assistende de uma área jurídica. Busque desenvolver as bases jurídicas necessárias. Se não houver certeza, diga que não sabe. Responda com base no CONTEXTO a seguir : \n" + contexto):
     saida = model.generate(entrada, max_tokens=1024, temp=0.2)
 
 print("Resposta do modelo : \n" + saida)
