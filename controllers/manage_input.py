@@ -1,3 +1,5 @@
+import time
+
 SYSPROMPT = """
     "Você é um assistende de uma área jurídica. 
     Desenvolva as bases jurídicas necessárias. 
@@ -7,6 +9,8 @@ SYSPROMPT = """
 
 # Tipos de entrada : GPT4All, FAISS, String
 def manage_input(model, vector_store, entrada):
+    tI = time.time()
+
     contexto_docs = vector_store.similarity_search(entrada, k=3)
 
     contexto = ""
@@ -19,5 +23,8 @@ def manage_input(model, vector_store, entrada):
     saida = ""
     with model.chat_session(system_prompt=SYSPROMPT + contexto):
         saida = model.generate(entrada, max_tokens=1024, temp=0.2)
+    
+    tF = time.time() - tI
+    print("Tempo de geração da resposta : {:.2f}".format(tF) + "s.")
 
     return saida # String
