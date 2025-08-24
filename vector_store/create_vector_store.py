@@ -53,8 +53,7 @@ def create_vector_store():
         insercoes += 1
 
         vector_store.add_documents(documents=documentosInsercao, ids=uuidsInsercao) 
-            
-        
+              
     vector_store.save_local(PATH_VECTOR_DISK)
     print("Vector store criada com sucesso...")
 

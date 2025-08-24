@@ -1,12 +1,11 @@
-# Tipos de entrada : GPT4All, FAISS, String
-
 SYSPROMPT = """
     "Você é um assistende de uma área jurídica. 
-    Busque desenvolver as bases jurídicas necessárias. 
+    Desenvolva as bases jurídicas necessárias. 
     Se não houver certeza, diga que não sabe. 
-    Responda com base no CONTEXTO a seguir : \n"
+    Responda em português com base no CONTEXTO a seguir : \n"
 """
 
+# Tipos de entrada : GPT4All, FAISS, String
 def manage_input(model, vector_store, entrada):
     contexto_docs = vector_store.similarity_search(entrada, k=3)
 
